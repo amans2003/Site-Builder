@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEditorStore } from '../store/editorStore'
 import { downloadExport } from '../api/exportSite'
+import { API_BASE_URL } from '../api/config'
 import { BrandMark } from './BrandMark'
 
 const DEVICES = [
@@ -49,7 +50,7 @@ export function Toolbar() {
       // otherwise "live preview" would silently show stale content.
       if (dirty) await saveProject()
       const page = project.pages[currentPageIndex]
-      window.open(`/api/preview/${project._id}/${page.name}`, '_blank')
+      window.open(`${API_BASE_URL}/api/preview/${project._id}/${page.name}`, '_blank')
     } finally {
       setPreviewing(false)
     }

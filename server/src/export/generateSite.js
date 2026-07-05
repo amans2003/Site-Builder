@@ -1,7 +1,11 @@
 import path from 'node:path'
 import { getSection, sectionRegistry, pageFilename, productFilename, escapeHtml } from 'shared'
 
-const UPLOADS_PREFIX = '/uploads/'
+// Matches the filename whether the stored URL is root-relative (legacy local
+// dev data, "/uploads/xxx.png") or absolute (current uploads, prefixed with
+// PUBLIC_API_BASE_URL so they render from any frontend origin) — either way,
+// what matters for bundling into the export is just the filename at the end.
+const UPLOADS_RE = /\/uploads\/([^/?#]+)/
 const PRODUCT_TEMPLATE_PAGE = 'product'
 
 function collectAndRewriteAssets(pages, products) {
@@ -9,8 +13,9 @@ function collectAndRewriteAssets(pages, products) {
   let counter = 0
 
   function rewriteValue(value) {
-    if (typeof value === 'string' && value.startsWith(UPLOADS_PREFIX)) {
-      const filename = value.slice(UPLOADS_PREFIX.length)
+    const match = typeof value === 'string' ? value.match(UPLOADS_RE) : null
+    if (match) {
+      const filename = match[1]
       if (!assets.has(filename)) {
         counter += 1
         const ext = path.extname(filename)

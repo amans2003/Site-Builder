@@ -30,7 +30,11 @@ const router = Router()
 
 router.post('/', requireAuth, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
-  res.status(201).json({ url: `/uploads/${req.file.filename}` })
+  // Absolute so it renders correctly from the client even when the frontend
+  // and backend are separate deployments (e.g. Vercel + Render) — a root-
+  // relative path would resolve against the frontend's own origin instead.
+  const base = process.env.PUBLIC_API_BASE_URL || ''
+  res.status(201).json({ url: `${base}/uploads/${req.file.filename}` })
 })
 
 export default router
