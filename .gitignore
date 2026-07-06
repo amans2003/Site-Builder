@@ -5,3 +5,8 @@ server/uploads/*
 !server/uploads/.gitkeep
 .DS_Store
 prompt.txt
+
+# This is an npm workspaces monorepo — only the root package-lock.json is
+# authoritative. A lockfile inside a workspace member (e.g. client/) is stale
+# scaffolding leftover and can make installs resolve inconsistent versions.
+/*/package-lock.json
